@@ -34,14 +34,19 @@ const removeContact = async (contactId) => {
 }
 
 const addContact = async (body) => {
-
   const contacts = await readContacts();
   contacts.push(body);
   await addContacts(contacts);
   return (contacts);
 }
 
-const updateContact = async (contactId, body) => { }
+const updateContact = async (contactId, body) => {
+  // const contacts = await readContacts();
+  // const contact = contacts.find((c) => c.id == contactId);
+  // contacts.push(body);
+  // await addContacts(contacts);
+  // return (contacts);
+}
 
 module.exports = {
   listContacts,

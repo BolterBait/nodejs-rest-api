@@ -1,6 +1,6 @@
 const express = require('express');
 const app = require('../../app');
-const { listContacts, getContactById, addContact, removeContact } = require('../../models/contacts')
+const { listContacts, getContactById, addContact, removeContact, updateContact } = require('../../models/contacts')
 const { nanoid } = require('nanoid');
 const { HttpError } = require('../../helpers');
 const router = express.Router()
@@ -29,7 +29,6 @@ router.post('/', async (req, res, next) => {
 router.delete('/:contactId', async (req, res, next) => {
   const { contactId } = req.params;
   const contact = await getContactById(contactId);
-  console.log(`Знайшли контакт ${contact}`);
   if (!contact) {
     return res.status(404).json({ message: 'Not found' });
   }
@@ -38,7 +37,11 @@ router.delete('/:contactId', async (req, res, next) => {
 })
 
 router.put('/:contactId', async (req, res, next) => {
-  res.json({ message: 'template message' })
+  // const { contactId } = req.params;
+  // let contact = await getContactById(contactId);
+  // const { name, email, phone } = req.body;
+  // contact = await updateContact({ name, email, phone });
+  // res.status(201).json({ message: 'contact updated' });
 })
 
 module.exports = router
