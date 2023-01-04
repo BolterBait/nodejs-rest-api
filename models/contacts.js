@@ -1,5 +1,5 @@
-const { writeFile } = require('fs');
 const fs = require('fs/promises');
+// const { writeFile } = require('fs');
 
 const path = require('path');
 
@@ -22,7 +22,7 @@ const listContacts = async () => {
 
 const getContactById = async (contactId) => {
   const contacts = await readContacts();
-  const contact = contacts.find((c) => c.id == contactId);
+  const contact = contacts.find((c) => c.id === contactId);
   return contact;
 }
 
@@ -41,11 +41,14 @@ const addContact = async (body) => {
 }
 
 const updateContact = async (contactId, body) => {
-  // const contacts = await readContacts();
-  // const contact = contacts.find((c) => c.id == contactId);
-  // contacts.push(body);
-  // await addContacts(contacts);
-  // return (contacts);
+  const contacts = await readContacts();
+  contacts.forEach(body => {
+    if (body.id === contactId)
+      body.name = name;
+  }
+
+  // const { name, email, phone } = body;
+  console.log(body.name);
 }
 
 module.exports = {

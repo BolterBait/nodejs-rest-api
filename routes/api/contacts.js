@@ -1,8 +1,7 @@
 const express = require('express');
-const app = require('../../app');
 const { listContacts, getContactById, addContact, removeContact, updateContact } = require('../../models/contacts')
 const { nanoid } = require('nanoid');
-const { HttpError } = require('../../helpers');
+// const { HttpError } = require('../../helpers');
 const router = express.Router()
 
 router.get('/', async (req, res, next) => {
@@ -37,11 +36,9 @@ router.delete('/:contactId', async (req, res, next) => {
 })
 
 router.put('/:contactId', async (req, res, next) => {
-  // const { contactId } = req.params;
-  // let contact = await getContactById(contactId);
-  // const { name, email, phone } = req.body;
-  // contact = await updateContact({ name, email, phone });
-  // res.status(201).json({ message: 'contact updated' });
+  const { contactId } = req.params;
+  await updateContact(contactId);
+  return res.status(200).json("contact updated");
 })
 
 module.exports = router
