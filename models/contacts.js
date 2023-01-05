@@ -42,14 +42,15 @@ const addContact = async (body) => {
 
 const updateContact = async (contactId, body) => {
   const contacts = await readContacts();
-  contacts.forEach(body => {
-    if (body.id === contactId)
-      body.name = name;
+  const contactIndex = contacts.findIndex(contact => contact.id === contactId);
+  console.log(contactIndex);
+  if (contactIndex === -1) {
+    return null;
   }
+  contacts[contactIndex] = { id: contactId, ...body };
+  await addContacts(contacts);
+};
 
-  // const { name, email, phone } = body;
-  console.log(body.name);
-}
 
 module.exports = {
   listContacts,
