@@ -58,6 +58,25 @@ router.delete('/:contactId', async (req, res, next) => {
 })
 
 router.put('/:contactId', async (req, res, next) => {
+  const schema = Joi.object({
+    name: Joi.string()
+      .alphanum()
+      .min(3)
+      .max(30)
+      .required(),
+
+    phone: Joi.string()
+      .regex(/^[0-9]{10}$/)
+      .messages({ "string.pattern.base": `Phone number must have 10 digits.` })
+      .required(),
+
+    email: Joi.string()
+      .email({ minDomainSegments: 2, tlds: { allow: ['com', 'net'] } })
+  })
+  const validatedData = schema.validate(req.body);
+  if (validatedData.error) {
+    return res.status(400).json({ status: validatedData.error })
+  }
   const { contactId } = req.params;
   const { name, email, phone } = req.body;
   const result = await updateContact(contactId, { name, email, phone });
