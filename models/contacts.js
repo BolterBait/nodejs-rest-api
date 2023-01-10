@@ -1,5 +1,4 @@
 const fs = require('fs/promises');
-// const { writeFile } = require('fs');
 
 const path = require('path');
 
@@ -30,7 +29,6 @@ const removeContact = async (contactId) => {
   const contacts = await readContacts();
   const updatedContacts = contacts.filter((contact) => contact.id !== contactId);
   await addContacts(updatedContacts);
-
 }
 
 const addContact = async (body) => {
@@ -41,7 +39,6 @@ const addContact = async (body) => {
 }
 
 const updateContact = async (contactId, body) => {
-
   const contacts = await readContacts();
   const contactIndex = contacts.findIndex(contact => contact.id === contactId);
   console.log(contactIndex);
@@ -49,8 +46,7 @@ const updateContact = async (contactId, body) => {
     return null;
   }
   contacts[contactIndex] = { id: contactId, ...body };
-  console.log(contacts[contactIndex]);
-  await addContacts(contacts);
+  return contacts[contactIndex];
 };
 
 

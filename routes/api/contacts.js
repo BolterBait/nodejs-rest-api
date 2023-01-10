@@ -71,20 +71,18 @@ router.put('/:contactId', async (req, res, next) => {
       .required(),
 
     email: Joi.string()
-      .email({ minDomainSegments: 2, tlds: { allow: ['com', 'net'] } })
-  })
+      .email({ minDomainSegments: 2, tlds: { allow: ['com', 'net'] } }).required(),
+  });
   const validatedData = schema.validate(req.body);
   if (validatedData.error) {
     return res.status(400).json({ status: validatedData.error })
   }
   const { contactId } = req.params;
-  const { name, email, phone } = req.body;
-  const result = await updateContact(contactId, { name, email, phone });
-  console.log((result));
+  const result = await updateContact(contactId, req.body);
   if (!result) {
     return next(HttpError(404, "Contact not found"));
   }
-  return res.status(200).json("contact updated");
+  return res.status(200).json(result);
 })
 
 module.exports = router
