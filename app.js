@@ -16,17 +16,12 @@ app.use('/api/contacts', contactsRouter)
 
 app.use((req, res) => {
   res.status(404).json({ message: 'Not found' })
-})
-
+});
 
 app.use((err, req, res, next) => {
   if (err.status) {
-    res.status(err.status).json({
-      message: err.message,
-    });
+    res.status(err.status || 500).json({ message: err.message || "Internal server error" })
   }
-  console.error("API Error: ", err.message);
-  res.status(500).json({ message: "Internal server error", });
 });
 
-module.exports = app
+module.exports = app;
