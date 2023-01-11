@@ -35,7 +35,7 @@ const addContact = async (body) => {
   const contacts = await readContacts();
   contacts.push(body);
   await addContacts(contacts);
-  return (contacts);
+  return contacts;
 }
 
 const updateContact = async (contactId, body) => {
