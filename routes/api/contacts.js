@@ -3,7 +3,7 @@ const { listContacts, getContactById, addContact, removeContact, updateContact }
 const { nanoid } = require('nanoid');
 const { HttpError } = require('../../helpers');
 const router = express.Router()
-const Joi = require('joi');
+const { validateBody } = require('../../middlewares/validator');
 
 router.get('/', async (req, res, next) => {
   const contacts = await listContacts();
@@ -20,24 +20,8 @@ router.get('/:contactId', async (req, res, next) => {
 })
 
 router.post('/', async (req, res, next) => {
-  const schema = Joi.object({
-    name: Joi.string()
-      .alphanum()
-      .min(3)
-      .max(30)
-      .required(),
 
-    phone: Joi.string()
-      .regex(/^[0-9]{10}$/)
-      .messages({ "string.pattern.base": `Phone number must have 10 digits.` })
-      .required(),
-
-    email: Joi.string()
-      .email({ minDomainSegments: 2, tlds: { allow: ['com', 'net'] } })
-  })
-
-
-  const validatedData = schema.validate(req.body);
+  const validatedData = validateBody(req.body);
   if (validatedData.error) {
     return res.status(400).json({ status: validatedData.error })
   }
@@ -58,22 +42,8 @@ router.delete('/:contactId', async (req, res, next) => {
 })
 
 router.put('/:contactId', async (req, res, next) => {
-  const schema = Joi.object({
-    name: Joi.string()
-      .alphanum()
-      .min(3)
-      .max(30)
-      .required(),
 
-    phone: Joi.string()
-      .regex(/^[0-9]{10}$/)
-      .messages({ "string.pattern.base": `Phone number must have 10 digits.` })
-      .required(),
-
-    email: Joi.string()
-      .email({ minDomainSegments: 2, tlds: { allow: ['com', 'net'] } }).required(),
-  });
-  const validatedData = schema.validate(req.body);
+  const validatedData = validateBody(req.body);
   if (validatedData.error) {
     return res.status(400).json({ status: validatedData.error })
   }
