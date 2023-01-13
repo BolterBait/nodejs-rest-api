@@ -4,6 +4,7 @@ const { nanoid } = require('nanoid');
 const { HttpError } = require('../../helpers');
 const router = express.Router()
 const { validateBody } = require('../../middlewares/validator');
+const { Contact } = require('../../models/index');
 
 router.get('/', async (req, res, next) => {
   const contacts = await listContacts();
@@ -12,7 +13,7 @@ router.get('/', async (req, res, next) => {
 
 router.get('/:contactId', async (req, res, next) => {
   const { contactId } = req.params;
-  const contact = await getContactById(contactId);
+  const contact = await Contact.findById(contactId);
   if (!contact) {
     return res.status(404).json({ message: 'Not found' });
   }
@@ -27,17 +28,17 @@ router.post('/', async (req, res, next) => {
   }
   const id = nanoid();
   const { name, email, phone } = req.body;
-  const newContact = await addContact({ id, name, email, phone });
+  const newContact = await Contact.create({ id, name, email, phone });
   res.status(201).json(newContact);
 })
 
 router.delete('/:contactId', async (req, res, next) => {
   const { contactId } = req.params;
-  const contact = await getContactById(contactId);
+  const contact = await Contact.findById(contactId);
   if (!contact) {
     return res.status(404).json({ message: 'Not found' });
   }
-  await removeContact(contactId);
+  await Contact.findByIdAndRemove(contactId);
   res.status(200).json({ "message": "contact deleted" });
 })
 
@@ -48,7 +49,7 @@ router.put('/:contactId', async (req, res, next) => {
     return res.status(400).json({ status: validatedData.error })
   }
   const { contactId } = req.params;
-  const result = await updateContact(contactId, req.body);
+  const result = await Contact.findByIdAndUpdate(contactId, req.body);
   if (!result) {
     return next(HttpError(404, "Contact not found"));
   }
