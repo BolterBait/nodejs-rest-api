@@ -1,13 +1,11 @@
 const express = require('express');
-const { listContacts, getContactById, addContact, removeContact, updateContact } = require('../../models/contacts')
 const { nanoid } = require('nanoid');
-const { HttpError } = require('../../helpers');
 const router = express.Router()
 const { validateBody } = require('../../middlewares/validator');
 const { Contact } = require('../../models/index');
 
 router.get('/', async (req, res, next) => {
-  const contacts = await listContacts();
+  const contacts = await Contact.find();
   res.json({ contacts })
 })
 
@@ -42,18 +40,7 @@ router.delete('/:contactId', async (req, res, next) => {
   res.status(200).json({ "message": "contact deleted" });
 })
 
-router.put('/:contactId', async (req, res, next) => {
 
-  const validatedData = validateBody(req.body);
-  if (validatedData.error) {
-    return res.status(400).json({ status: validatedData.error })
-  }
-  const { contactId } = req.params;
-  const result = await Contact.findByIdAndUpdate(contactId, req.body);
-  if (!result) {
-    return next(HttpError(404, "Contact not found"));
-  }
-  return res.status(200).json(result);
-})
+
 
 module.exports = router
