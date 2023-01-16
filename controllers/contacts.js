@@ -1,7 +1,6 @@
 const { validateBody } = require('../middlewares/validator');
 const { Contact } = require('../models/index');
 const { HttpError } = require('../helpers/index');
-const { updateContactStatus } = require('../models/contacts');
 const { nanoid } = require('nanoid');
 
 async function getContacts(req, res, next) {
@@ -27,7 +26,7 @@ async function createContact(req, res, next) {
     const id = nanoid();
     const { name, email, phone } = req.body;
     const newContact = await Contact.create({ id, name, email, phone });
-    res.status(201).json(newContact);
+    return res.status(201).json(newContact);
 };
 
 async function deleteContact(req, res, next) {
@@ -37,7 +36,7 @@ async function deleteContact(req, res, next) {
         return res.status(404).json({ message: 'Not found' });
     }
     await Contact.findByIdAndRemove(contactId);
-    res.status(200).json({ "message": "contact deleted" });
+    return res.status(200).json({ "message": "contact deleted" });
 };
 
 async function updateContact(req, res, next) {
@@ -46,11 +45,11 @@ async function updateContact(req, res, next) {
     if (!req.body) {
         return res.status(400).json({ message: "missing field favorite" })
     }
-    const result = await updateContactStatus(contactId, favorite);
+    const result = await Contact.updateOne({ _id: contactId }, { $set: { favorite: !favorite } });
     if (!result) {
-        return new HttpError(404);
+        return next(new HttpError(404));
     }
-    res.status(200).json(result);
+    return res.status(200).json(result);
 };
 
 module.exports = {
