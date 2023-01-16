@@ -3,7 +3,6 @@ const Joi = require('joi');
 const validateBody = (body) => {
     const schema = Joi.object({
         name: Joi.string()
-            .alphanum()
             .min(3)
             .max(30),
 

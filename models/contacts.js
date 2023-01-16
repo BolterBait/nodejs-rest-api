@@ -1,8 +1,10 @@
 const fs = require('fs/promises');
 
 const path = require('path');
+const { tryCatchWrapper } = require('../helpers');
 
 const contactsPath = path.resolve(__dirname, 'contacts.json');
+const { Contact } = require('../models/index');
 
 async function readContacts() {
   const contactsRaw = await fs.readFile(contactsPath);
@@ -41,13 +43,16 @@ const addContact = async (body) => {
 const updateContact = async (contactId, body) => {
   const contacts = await readContacts();
   const contactIndex = contacts.findIndex(contact => contact.id === contactId);
-  console.log(contactIndex);
   if (contactIndex === -1) {
     return null;
   }
   contacts[contactIndex] = { id: contactId, ...body };
   await addContacts(contacts);
   return contacts[contactIndex];
+};
+
+const updateContactStatus = async (contactId, favorite) => {
+  return Contact.updateOne({ _id: contactId }, { $set: { favorite: !favorite } });
 };
 
 
@@ -57,4 +62,5 @@ module.exports = {
   removeContact,
   addContact,
   updateContact,
+  updateContactStatus: tryCatchWrapper(updateContactStatus),
 }
