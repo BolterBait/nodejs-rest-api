@@ -4,7 +4,7 @@ const { HttpError } = require('../helpers/index');
 const { nanoid } = require('nanoid');
 
 async function getContacts(req, res, next) {
-    const contacts = await Contact.find();
+    const contacts = await Contact.find()
     res.json({ contacts })
 }
 
@@ -45,7 +45,7 @@ async function updateContact(req, res, next) {
     if (!req.body) {
         return res.status(400).json({ message: "missing field favorite" })
     }
-    const result = await Contact.updateOne({ _id: contactId }, { $set: { favorite: !favorite } });
+    const result = await Contact.findByIdAndUpdate({ _id: contactId }, { favorite: favorite }, { new: true });
     if (!result) {
         return next(new HttpError(404));
     }
