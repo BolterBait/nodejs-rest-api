@@ -24,8 +24,8 @@ async function createContact(req, res, next) {
         return res.status(400).json({ status: validatedData.error })
     }
     const id = nanoid();
-    const { name, email, phone } = req.body;
-    const newContact = await Contact.create({ id, name, email, phone });
+    const { name, email, phone, favorite } = req.body;
+    const newContact = await Contact.create({ id, name, email, phone, favorite });
     return res.status(201).json(newContact);
 };
 

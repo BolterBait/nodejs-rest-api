@@ -14,7 +14,6 @@ const validateBody = (body) => {
             .email({ minDomainSegments: 2, tlds: { allow: ['com', 'net'] } }),
         favorite: Joi.boolean()
             .truthy('false')
-            .required,
     });
 
     return schema.validate(body);
