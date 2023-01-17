@@ -1,58 +1,12 @@
 const express = require('express');
-const { listContacts, getContactById, addContact, removeContact, updateContact } = require('../../models/contacts')
-const { nanoid } = require('nanoid');
-const { HttpError } = require('../../helpers');
 const router = express.Router()
-const { validateBody } = require('../../middlewares/validator');
+const { tryCatchWrapper } = require('../../helpers/index');
+const { getContactById, getContacts, createContact, deleteContact, updateContact } = require('../../controllers/contacts');
 
-router.get('/', async (req, res, next) => {
-  const contacts = await listContacts();
-  res.json({ contacts })
-})
+router.get('/', tryCatchWrapper(getContacts));
+router.get('/:contactId', tryCatchWrapper(getContactById));
+router.post('/', tryCatchWrapper(createContact));
+router.delete('/:contactId', tryCatchWrapper(deleteContact));
+router.patch('/:contactId/favorite', tryCatchWrapper(updateContact));
 
-router.get('/:contactId', async (req, res, next) => {
-  const { contactId } = req.params;
-  const contact = await getContactById(contactId);
-  if (!contact) {
-    return res.status(404).json({ message: 'Not found' });
-  }
-  return res.json({ contact });
-})
-
-router.post('/', async (req, res, next) => {
-
-  const validatedData = validateBody(req.body);
-  if (validatedData.error) {
-    return res.status(400).json({ status: validatedData.error })
-  }
-  const id = nanoid();
-  const { name, email, phone } = req.body;
-  const newContact = await addContact({ id, name, email, phone });
-  res.status(201).json(newContact);
-})
-
-router.delete('/:contactId', async (req, res, next) => {
-  const { contactId } = req.params;
-  const contact = await getContactById(contactId);
-  if (!contact) {
-    return res.status(404).json({ message: 'Not found' });
-  }
-  await removeContact(contactId);
-  res.status(200).json({ "message": "contact deleted" });
-})
-
-router.put('/:contactId', async (req, res, next) => {
-
-  const validatedData = validateBody(req.body);
-  if (validatedData.error) {
-    return res.status(400).json({ status: validatedData.error })
-  }
-  const { contactId } = req.params;
-  const result = await updateContact(contactId, req.body);
-  if (!result) {
-    return next(HttpError(404, "Contact not found"));
-  }
-  return res.status(200).json(result);
-})
-
-module.exports = router
+module.exports = router;
