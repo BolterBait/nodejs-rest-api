@@ -6,7 +6,7 @@ dotenv.config();
 mongoose.set('strictQuery', false);
 
 const { HOST_URI } = process.env;
-async function main() {
+(async function () {
   try {
     await mongoose.connect(HOST_URI);
 
@@ -18,7 +18,6 @@ async function main() {
     console.error('Main failed', error.message)
     process.exit(1);
   }
-}
-main();
+})();
 
 
