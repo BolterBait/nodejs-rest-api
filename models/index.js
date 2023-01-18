@@ -1,4 +1,6 @@
 const mongoose = require("mongoose");
+const SchemaTypes = require("mongoose");
+
 const schema = mongoose.Schema(
     {
         name: {
@@ -15,6 +17,10 @@ const schema = mongoose.Schema(
             type: Boolean,
             default: false,
         },
+        owner: {
+            type: SchemaTypes.ObjectId,
+            ref: 'user',
+        }
     }
 );
 

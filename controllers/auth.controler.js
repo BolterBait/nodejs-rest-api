@@ -12,11 +12,9 @@ async function register(req, res, next) {
         if (error.message.includes("E11000 duplicate key error")) {
             throw new HttpError("User whis this email already exists");
         }
-        throw error
+        throw error;
     }
 }
-
-
 
 module.exports = {
     register,
