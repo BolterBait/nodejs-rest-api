@@ -19,6 +19,12 @@ const setContactFavorite = Joi.object({
     favorite: Joi.boolean().truthy('false')
 })
 
+const addUser = Joi.object({
+    email: Joi.string()
+        .email({ minDomainSegments: 2, tlds: { allow: ['com', 'net'] } }),
+    password: Joi.string().min(6).required()
+})
+
 module.exports = {
-    addContactSchema, setContactFavorite,
+    addContactSchema, setContactFavorite, addUser,
 }
