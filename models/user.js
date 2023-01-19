@@ -11,7 +11,7 @@ const schema = mongoose.Schema(
             type: String,
             required: [true, 'Email is required'],
             unique: true,
-            match: [/^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/, "user email is not valid"],
+            match: [/^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/, "Email is not valid"],
         },
         subscription: {
             type: String,
