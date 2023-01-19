@@ -5,7 +5,7 @@ const { validateBody } = require('../../middlewares/validator');
 const { addUser } = require('../../schemas');
 const authRouter = express.Router();
 
-authRouter.post("/register", tryCatchWrapper(register), validateBody(addUser));
+authRouter.post("/register", validateBody(addUser), tryCatchWrapper(register));
 authRouter.post("/login", tryCatchWrapper(login));
 
 module.exports = { authRouter, };

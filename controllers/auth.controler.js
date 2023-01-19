@@ -1,5 +1,5 @@
 const { User } = require('../models/user');
-const { Conflict } = require('http-errors');
+const { Conflict, Unauthorized } = require('http-errors');
 const bcrypt = require('bcrypt');
 
 async function register(req, res, next) {
@@ -20,9 +20,18 @@ async function register(req, res, next) {
     }
 }
 
-function login(req, res, next) {
+async function login(req, res, next) {
     const { email, password } = req.body;
-    res.json({ ok: true })
+    const storedUser = await User.findOne({ email, });
+    if (!storedUser) {
+        throw Unauthorized("Email or password is wrong");
+    }
+    const isPasswordValid = await bcrypt.compare(password, storedUser.password);
+
+    if (!isPasswordValid) {
+        throw Unauthorized("Email or password is wrong");
+    }
+    return res.status(200).json({ data: { token: "<Token>" } });
 }
 
 module.exports = {
