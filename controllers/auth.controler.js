@@ -1,5 +1,7 @@
 const { User } = require('../models/user');
-const { HttpError } = require('../helpers/index');
+// const { HttpError } = require('../helpers/index');
+const { Conflict } = require('http-errors');
+
 
 async function register(req, res, next) {
     const { email, password } = req.body;
@@ -10,7 +12,7 @@ async function register(req, res, next) {
         res.status(201).json({ data: { user: savedUser, }, });
     } catch (error) {
         if (error.message.includes("E11000 duplicate key error")) {
-            throw new HttpError("User whith this email already exists");
+            throw Conflict("User whith this email already exists!!!")
         }
 
         throw error;

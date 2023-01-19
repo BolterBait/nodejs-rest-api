@@ -1,12 +1,13 @@
 const express = require('express')
 const logger = require('morgan')
+// const morgan = require('morgan');
 const cors = require('cors')
 
 const contactsRouter = require('./routes/api/contacts');
 const { authRouter } = require('./routes/api/auth');
 
 const app = express()
-
+// app.use(morgan("dev")); // morgan only logs requests
 const formatsLogger = app.get('env') === 'development' ? 'dev' : 'short'
 
 app.use(logger(formatsLogger))
@@ -20,19 +21,19 @@ app.use((req, res) => {
   res.status(404).json({ message: 'Not found' })
 });
 
-app.use((err, req, res, next) => {
-  console.error("Handling errors: ", err.message, err.name);
-  if (err.name === "ValidationError") {
-    return res.status(400).json({ message: err.message })
+app.use((error, req, res, next) => {
+  console.error("Handling errors:", error.message, error.name);
+  if (error.name === "HttpError") {
+    return res.status(400).json({ message: error.message })
   }
-  if (err.message.includes("Cast to ObjectId failed for value")) {
+  if (error.message.includes("Cast to ObjectId failed for value")) {
     return res.status(400).json({ message: "id is invalid" })
   }
-  if (err.status) {
-    return res.status(err.status || 500).json({ message: err.message || "Internal server error" })
+  if (error.status) {
+    return res.status(error.status || 500).json({ message: error.message || "Internal server error" })
   }
-  console.error(err);
-  return res.status(400).json({ message: err.message })
+  console.log("Error log:", error.message, error.name)
+  return res.status(400).json({ message: error.message })
 });
 
 module.exports = { app, };
