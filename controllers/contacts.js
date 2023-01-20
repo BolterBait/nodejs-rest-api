@@ -1,15 +1,11 @@
 const { validateBody } = require('../middlewares/validator');
 const { Contact } = require('../models/index');
-const { HttpError } = require('../helpers/index');
 const { nanoid } = require('nanoid');
 
-// async function getContacts(req, res, next) {
-//     const contacts = await Contact.find()
-//     res.json({ contacts })
-// }
-
 async function getContacts(req, res, next) {
-    const userWithContacts = await Contact.find()
+    const { limit = 100, page = 1 } = req.query;
+    const skip = (page - 1) * limit;
+    const contacts = await Contact.find({}).skip(skip).limit(limit);
     res.json({ contacts })
 }
 
