@@ -1,6 +1,8 @@
 const { User } = require('../models/user');
 const { Conflict, Unauthorized } = require('http-errors');
 const bcrypt = require('bcrypt');
+const jwt = require('jsonwebtoken');
+
 
 async function register(req, res, next) {
     const { email, password } = req.body;
@@ -31,7 +33,8 @@ async function login(req, res, next) {
     if (!isPasswordValid) {
         throw Unauthorized("Email or password is wrong");
     }
-    return res.status(200).json({ data: { token: "<Token>" } });
+    const token = jwt.sign({ id: storedUser._id }, process.env.JWT_SECRET, { expiresIn: "1h" });
+    return res.status(200).json({ data: { token, } });
 }
 
 module.exports = {
