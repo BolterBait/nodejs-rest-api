@@ -9,7 +9,6 @@ function validateBody(schema) {
         if (error) {
             return next(new HttpError(400, error.message));
         }
-
         return next();
     };
 }

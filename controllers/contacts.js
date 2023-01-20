@@ -5,7 +5,7 @@ const { nanoid } = require('nanoid');
 async function getContacts(req, res, next) {
     const { limit = 100, page = 1 } = req.query;
     const skip = (page - 1) * limit;
-    const contacts = await Contact.find({}).skip(skip).limit(limit);
+    const contacts = await Contact.find({}).skip(skip).limit(limit).populate("owner");
     res.json({ contacts })
 }
 
