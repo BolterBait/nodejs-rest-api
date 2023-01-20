@@ -18,8 +18,8 @@ const schema = mongoose.Schema(
             default: false,
         },
         owner: {
-            type: [SchemaTypes.ObjectId],
-            ref: 'user',
+            type: SchemaTypes.ObjectId,
+            ref: 'users',
         }
     }
 );

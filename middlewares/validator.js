@@ -29,13 +29,12 @@ async function auth(req, res, next) {
     try {
         const { id } = jwt.verify(token, process.env.JWT_SECRET);
         const user = await User.findById(id);
-        console.log("user:", user);
         req.user = user;
     } catch (error) {
         if (error.name === "TokenExpiredError" || error.name === "JsonWebTokenError") {
             throw Unauthorized("Not authorized. Jwt token is not valid")
         }
-        console.error(error);
+
         throw error;
     }
     next();
