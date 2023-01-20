@@ -15,7 +15,6 @@ function validateBody(schema) {
 }
 
 async function auth(req, res, next) {
-    console.log("req.headers:", req.headers);
 
     const authHeader = req.headers.authorization || "";
     const [type, token] = authHeader.split(" ");
@@ -33,9 +32,10 @@ async function auth(req, res, next) {
         console.log("user:", user);
         req.user = user;
     } catch (error) {
-        if (error.name === "TokenExpiredError" || error.name === "JsonWebToken") {
-            throw Unauthorized("jwt token is not valid")
+        if (error.name === "TokenExpiredError" || error.name === "JsonWebTokenError") {
+            throw Unauthorized("Not authorized. Jwt token is not valid")
         }
+        console.error(error);
         throw error;
     }
     next();

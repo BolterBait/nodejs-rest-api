@@ -34,7 +34,12 @@ async function login(req, res, next) {
         throw Unauthorized("Email or password is wrong");
     }
     const token = jwt.sign({ id: storedUser._id }, process.env.JWT_SECRET, { expiresIn: "1h" });
-    return res.status(200).json({ data: { token, } });
+    const subscription = await storedUser.subscription;
+    return res.status(200).json({
+        data: {
+            token, user: { email, subscription }
+        }
+    });
 }
 
 module.exports = {
