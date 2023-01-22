@@ -24,11 +24,13 @@ app.use((req, res) => {
 app.use((error, req, res, next) => {
 
   if (error.message.includes("Cast to ObjectId failed for value")) {
+    console.error(error)
     return res.status(400).json({ message: "id is invalid" })
   }
   if (error.status) {
     return res.status(error.status || 500).json({ message: error.message || "Internal server error" })
   }
+  console.error(error)
   return res.status(400).json("Помилка від Joi або іншої бібліотеки валідації")
 });
 

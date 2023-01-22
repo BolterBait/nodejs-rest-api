@@ -6,8 +6,8 @@ async function createContact(req, res, next) {
 
 async function getContacts(req, res, next) {
     const
-        { user } = req;
-    const userWithContacts = await User.findById(user._id).populate('owner')
+        { _id } = req.user;
+    const userWithContacts = await User.findById({owner:_id})
 
     return res.status(200).json({ data: { contacts: userWithContacts.contacts }, })
 }

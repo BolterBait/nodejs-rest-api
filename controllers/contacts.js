@@ -3,9 +3,10 @@ const { Contact } = require('../models/index');
 const { nanoid } = require('nanoid');
 
 async function getContacts(req, res, next) {
+    const {_id} = req.user;
     const { limit = 100, page = 1 } = req.query;
     const skip = (page - 1) * limit;
-    const contacts = await Contact.find({}).skip(skip).limit(limit).populate("owner");
+    const contacts = await Contact.find({owner: _id}).skip(skip).limit(limit);
     res.json({ contacts })
 }
 

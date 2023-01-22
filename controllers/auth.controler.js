@@ -42,7 +42,23 @@ async function login(req, res, next) {
     });
 }
 
+async function logout (req, res, next) {
+    // const {_id} = req.user;
+    // const storedUser= await User.findById(_id);
+  
+        const authHeader = req.headers.authorization || "";
+        let [type, token] = authHeader.split(" ");
+    // if (!storedUser) {
+    //     throw Unauthorized("Not authorized");
+    //   }
+    
+   token = "";
+   console.log(token);
+      return res.status(204).json({ data: {token, },  });
+    }
+
 module.exports = {
     register,
     login,
+    logout,
 };
