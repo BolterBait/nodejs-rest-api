@@ -18,10 +18,7 @@ const schema = mongoose.Schema(
             enum: ["starter", "pro", "business"],
             default: "starter"
         },
-        contacts: {
-            type: [mongoose.Types.ObjectId],
-            rel: "contact",
-        },
+      
         token: String
     },
     { versionKey: false }
