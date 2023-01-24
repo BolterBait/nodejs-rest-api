@@ -3,11 +3,15 @@ const { Contact } = require('../models/index');
 const { nanoid } = require('nanoid');
 
 async function getContacts(req, res, next) {
-    const {_id} = req.user;
-    const { limit = 100, page = 1 } = req.query;
+    const { limit = 100, page = 1, favorite } = req.query;
     const skip = (page - 1) * limit;
-    const contacts = await Contact.find({owner: _id}).skip(skip).limit(limit);
-    res.json({ contacts })
+
+    if(favorite){
+        const favoriteContacts = await Contact.find({favorite: true})
+        return res.status(200).json(favoriteContacts);
+    }
+    const contacts = await Contact.find({}).skip(skip).limit(limit);
+    return res.status(200).json({ contacts })
 }
 
 async function getContactById(req, res, next) {
