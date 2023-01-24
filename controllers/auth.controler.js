@@ -34,6 +34,7 @@ async function login(req, res, next) {
         throw Unauthorized("Email or password is wrong");
     }
     const token = jwt.sign({ id: storedUser._id }, process.env.JWT_SECRET, { expiresIn: "1h" });
+    await User.findByIdAndUpdate(storedUser._id, {token});
     const subscription = await storedUser.subscription;
     return res.status(200).json({
         data: {
@@ -45,13 +46,13 @@ async function login(req, res, next) {
 async function logout (req, res, next) {
     try {
         const {_id} = req.user;
-        const storedUser= await User.findByIdAndUpdate(_id, {token: null}, { expiresIn: "1s" });
+        const storedUser= await User.findByIdAndUpdate(_id, {token: null}, { expiresIn: "1" });
      
     if (!storedUser) {
         throw Unauthorized("Not authorized");
       }
-      console.log(storedUser);
-    return res.status(204).json();
+      console.log(storedUser.token);
+    return res.status(204).json({message:"See you soon"});
     
         
     } catch (error) {
