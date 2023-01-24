@@ -5,6 +5,7 @@ const cors = require('cors')
 const contactsRouter = require('./routes/api/contacts');
 const { authRouter } = require('./routes/api/auth');
 const { usersRouter } = require('./routes/api/users');
+const {tryCatchWrapper} = require('./helpers/index');
 
 const app = express()
 const formatsLogger = app.get('env') === 'development' ? 'dev' : 'short'
@@ -20,6 +21,11 @@ app.use('/api/users', usersRouter);
 app.use((req, res) => {
   res.status(404).json({ message: 'Not found' })
 });
+
+app.get('/api/error', tryCatchWrapper (async (req, res, next) => {
+  throw new Error("Something bad happened in async function!")
+})
+);
 
 app.use((error, req, res, next) => {
 

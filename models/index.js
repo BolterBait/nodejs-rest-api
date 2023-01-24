@@ -1,5 +1,5 @@
 const mongoose = require("mongoose");
-const SchemaTypes = require("mongoose");
+// const SchemaTypes = require("mongoose");
 
 const schema = mongoose.Schema(
     {
@@ -18,7 +18,7 @@ const schema = mongoose.Schema(
             default: false,
         },
         owner: {
-            type: SchemaTypes.ObjectId,
+            type: mongoose.Schema.Types.ObjectId,
             ref: 'users',
         }
     }

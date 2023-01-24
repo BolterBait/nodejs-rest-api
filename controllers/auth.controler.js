@@ -43,19 +43,21 @@ async function login(req, res, next) {
 }
 
 async function logout (req, res, next) {
-    // const {_id} = req.user;
-    // const storedUser= await User.findById(_id);
-  
-        const authHeader = req.headers.authorization || "";
-        let [type, token] = authHeader.split(" ");
-    // if (!storedUser) {
-    //     throw Unauthorized("Not authorized");
-    //   }
+    try {
+        const {_id} = req.user;
+        const storedUser= await User.findByIdAndUpdate(_id, {token: null}, { expiresIn: "1s" });
+     
+    if (!storedUser) {
+        throw Unauthorized("Not authorized");
+      }
+      console.log(storedUser);
+    return res.status(204).json();
     
-   token = "";
-   console.log(token);
-      return res.status(204).json({ data: {token, },  });
+        
+    } catch (error) {
+        res.status(404).json({message: error.message})
     }
+}
 
 module.exports = {
     register,

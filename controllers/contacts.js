@@ -20,14 +20,14 @@ async function getContactById(req, res, next) {
 };
 
 async function createContact(req, res, next) {
-
+const {_id} =req.user;
     const validatedData = validateBody(req.body);
     if (validatedData.error) {
         return res.status(400).json({ status: validatedData.error })
     }
     const id = nanoid();
     const { name, email, phone, favorite } = req.body;
-    const newContact = await Contact.create({ id, name, email, phone, favorite });
+    const newContact = await Contact.create({ id, name, email, phone, favorite, owner:_id, });
     return res.status(201).json(newContact);
 };
 
