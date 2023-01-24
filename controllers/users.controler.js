@@ -1,9 +1,14 @@
 const { Contact } = require('../models');
 const { User } = require('../models/user');
+const { validateBody } = require('../middlewares/validator');
 
 async function createContact(req, res, next) {
     const {_id} = req.user;
     const {name, email, phone, favorite } =req.body;
+    const validatedData = validateBody(req.body);
+    if (validatedData.error) {
+        return res.status(400).json({ status: validatedData.error })
+    }
     const newContact = await Contact.create({
         name, email, phone, favorite, owner: _id,
     });

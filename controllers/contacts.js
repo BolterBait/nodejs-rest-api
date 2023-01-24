@@ -1,6 +1,5 @@
 const { validateBody } = require('../middlewares/validator');
 const { Contact } = require('../models/index');
-const { nanoid } = require('nanoid');
 
 async function getContacts(req, res, next) {
     const { limit = 100, page = 1, favorite } = req.query;
@@ -22,18 +21,18 @@ async function getContactById(req, res, next) {
     }
     return res.json({ contact });
 };
-
 async function createContact(req, res, next) {
-const {_id} =req.user;
+    const {_id} = req.params;
+    const {name, email, phone, favorite } =req.body;
     const validatedData = validateBody(req.body);
     if (validatedData.error) {
         return res.status(400).json({ status: validatedData.error })
     }
-    const id = nanoid();
-    const { name, email, phone, favorite } = req.body;
-    const newContact = await Contact.create({ id, name, email, phone, favorite, owner:_id, });
+    const newContact = await Contact.create({
+        name, email, phone, favorite, owner: _id,
+    });
     return res.status(201).json(newContact);
-};
+}
 
 async function deleteContact(req, res, next) {
     const { contactId } = req.params;
@@ -56,7 +55,7 @@ async function updateContact(req, res, next) {
 module.exports = {
     getContacts,
     getContactById,
-    createContact,
     deleteContact,
+    createContact,
     updateContact,
 };

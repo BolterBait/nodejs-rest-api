@@ -7,7 +7,7 @@ const { addContactSchema, setContactFavorite } = require('../../schemas');
 
 router.get('/', tryCatchWrapper(getContacts));
 router.get('/:contactId', tryCatchWrapper(getContactById));
-router.post('/', validateBody(addContactSchema), tryCatchWrapper(createContact));
+router.post('/', tryCatchWrapper(createContact), validateBody(addContactSchema));
 router.delete('/:contactId', tryCatchWrapper(deleteContact));
 router.patch('/:contactId/favorite', validateBody(setContactFavorite), tryCatchWrapper(updateContact));
 
