@@ -1,5 +1,4 @@
 const { Contact } = require('../models');
-const { User } = require('../models/user');
 const { validateBody } = require('../middlewares/validator');
 
 async function createContact(req, res, next) {

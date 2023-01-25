@@ -32,7 +32,7 @@ app.use((error, req, res, next) => {
   //   return res.status(error.status || 500).json({ message: error.message || "Internal server error" })
   // }
   // console.error(error)
-  // return res.status(400).json("Помилка від Joi або іншої бібліотеки валідації")
+  return res.status(400).json("Помилка валідації")
 });
 
 module.exports = { app, };
