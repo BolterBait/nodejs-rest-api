@@ -1,11 +1,16 @@
 const { validateBody } = require('../middlewares/validator');
 const { Contact } = require('../models/index');
-const { HttpError } = require('../helpers/index');
-const { nanoid } = require('nanoid');
 
 async function getContacts(req, res, next) {
-    const contacts = await Contact.find()
-    res.json({ contacts })
+    const { limit = 100, page = 1, favorite } = req.query;
+    const skip = (page - 1) * limit;
+
+    if(favorite){
+        const favoriteContacts = await Contact.find({favorite: true})
+        return res.status(200).json(favoriteContacts);
+    }
+    const contacts = await Contact.find({}).skip(skip).limit(limit);
+    return res.status(200).json({ contacts })
 }
 
 async function getContactById(req, res, next) {
@@ -16,18 +21,18 @@ async function getContactById(req, res, next) {
     }
     return res.json({ contact });
 };
-
 async function createContact(req, res, next) {
-
+    const {_id} = req.params;
+    const {name, email, phone, favorite } =req.body;
     const validatedData = validateBody(req.body);
     if (validatedData.error) {
         return res.status(400).json({ status: validatedData.error })
     }
-    const id = nanoid();
-    const { name, email, phone, favorite } = req.body;
-    const newContact = await Contact.create({ id, name, email, phone, favorite });
+    const newContact = await Contact.create({
+        name, email, phone, favorite, owner: _id,
+    });
     return res.status(201).json(newContact);
-};
+}
 
 async function deleteContact(req, res, next) {
     const { contactId } = req.params;
@@ -42,20 +47,15 @@ async function deleteContact(req, res, next) {
 async function updateContact(req, res, next) {
     const { contactId } = req.params;
     const { favorite } = req.body;
-    if (!req.body) {
-        return res.status(400).json({ message: "missing field favorite" })
-    }
     const result = await Contact.findByIdAndUpdate({ _id: contactId }, { favorite: favorite }, { new: true });
-    if (!result) {
-        return next(new HttpError(404));
-    }
+
     return res.status(200).json(result);
 };
 
 module.exports = {
     getContacts,
     getContactById,
-    createContact,
     deleteContact,
+    createContact,
     updateContact,
 };

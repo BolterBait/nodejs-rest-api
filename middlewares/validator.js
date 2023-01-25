@@ -1,24 +1,44 @@
-const Joi = require('joi');
+const { Unauthorized } = require("http-errors");
+const { HttpError } = require("../helpers");
+const jwt = require('jsonwebtoken');
+const { User } = require("../models/user");
 
-const validateBody = (body) => {
-    const schema = Joi.object({
-        name: Joi.string()
-            .min(3)
-            .max(30),
 
-        phone: Joi.string()
-            .regex(/^[0-9]{10}$/)
-            .messages({ "string.pattern.base": `Phone number must have 10 digits.` }),
+function validateBody(schema) {
+    return (req, res, next) => {
+        const { error } = schema.validate(req.body);
+        if (error) {
+            return next(new HttpError(400, error.message));
+        }
+        return next();
+    };
+}
 
-        email: Joi.string()
-            .email({ minDomainSegments: 2, tlds: { allow: ['com', 'net'] } }),
-        favorite: Joi.boolean()
-            .truthy('false')
-    });
+async function auth(req, res, next) {
 
-    return schema.validate(body);
+    const authHeader = req.headers.authorization || "";
+    const [type, token] = authHeader.split(" ");
+    try {
+    if (type !== "Bearer") {
+        throw Unauthorized("Not authorized");
+    }
+    const { id } = jwt.verify(token, process.env.JWT_SECRET);
+        const user = await User.findById(id);
+        
+
+    if (!user || !user.token) {
+        throw Unauthorized("Not authorized");
+    }
+    req.user = user;   
+    } catch (error) {
+        if (error.name === "TokenExpiredError" || error.name === "JsonWebTokenError") {
+            throw Unauthorized("Not authorized. Jwt token is not valid")
+        }
+        throw error;
+    }
+    next();
 }
 
 module.exports = {
-    validateBody,
+    validateBody, auth,
 } 
