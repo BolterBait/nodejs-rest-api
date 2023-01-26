@@ -1,23 +1,7 @@
-const multer = require('multer');
-const path = require("path");
 const fs = require("fs/promises");
+const path = require("path");
 
-// async function upload(req, res, next) {
-    
-//         res.status(201).json({ status: 'success' });
-  
-// }
-
-const storage = multer.diskStorage({
-    destination: function (req, file, cb) {
-      cb(null, path.resolve(__dirname, "tmp"));
-    },
-    filename: function (req, file, cb) {
-      cb(null, Math.random() + file.originalname);
-    },
-  });
-  
- async function upload(req, res, next) {
+ async function uploadControler(req, res, next) {
     console.log("file", req.file);
     const { filename } = req.file;
   
@@ -37,5 +21,5 @@ const storage = multer.diskStorage({
   }
 
 module.exports = {
-    upload, storage
+  uploadControler,
    };

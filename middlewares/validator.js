@@ -2,8 +2,6 @@ const { Unauthorized } = require("http-errors");
 const { HttpError } = require("../helpers");
 const jwt = require('jsonwebtoken');
 const { User } = require("../models/user");
-const multer = require('multer');
-const storage = require('../controllers/files.controler');
 
 
 function validateBody(schema) {
@@ -41,13 +39,9 @@ async function auth(req, res, next) {
     next();
 }
 
-const upload = multer({
-    storage,
-    limits: {
-      fileSize: 1,
-    },
-  });
+
+
 
 module.exports = {
-    validateBody, auth, upload,
+    validateBody, auth,
 } 
