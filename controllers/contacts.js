@@ -67,7 +67,7 @@ async function uploadImage(req, res, next) {
   const { filename } = req.file;
 
   const tmpPath = path.resolve(__dirname, '../tmp', filename);
-  const newPath = path.resolve(__dirname, '../public', filename);
+  const newPath = path.resolve(__dirname, '../public/avatars', filename);
 
   try {
     await fs.rename(tmpPath, newPath);
@@ -79,11 +79,11 @@ async function uploadImage(req, res, next) {
   const contactId = req.params.id;
 
   const contact = await Contact.findById(contactId);
-  contact.image = `/public/${filename}`;
+  contact.avatarURL = `/public/avatars/${filename}`;
   await contact.save();
 
   return res.json({
-    data: { image: contact.image },
+    data: { image: contact.avatarURL },
   });
 }
 

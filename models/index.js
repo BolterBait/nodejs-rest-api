@@ -20,7 +20,7 @@ const schema = mongoose.Schema({
     type: SchemaTypes.ObjectId,
     ref: 'users',
   },
-  image: {
+  avatarURL: {
     type: String,
     default: '',
   },
