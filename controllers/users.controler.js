@@ -55,8 +55,10 @@ async function uploadAvatar(req, res, next) {
   user.avatarURL = `/public/avatars/${filename}`;
   await user.save();
 
-  return res.json({
-    ok: true,
+  return res.status(200).json({
+    data: {
+      avatarURL: user.avatarURL,
+    },
   });
 }
 
