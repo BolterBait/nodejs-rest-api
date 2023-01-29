@@ -1,6 +1,11 @@
 const express = require('express');
 const { tryCatchWrapper } = require('../../helpers/index');
-const { auth, upload, validateBody } = require('../../middlewares/validator');
+const {
+  auth,
+  upload,
+  validateBody,
+  resizeAvatar,
+} = require('../../middlewares/validator');
 const {
   createContact,
   getContacts,
@@ -24,8 +29,10 @@ usersRouter.get(
 usersRouter.get('/current', tryCatchWrapper(auth), tryCatchWrapper(current));
 usersRouter.patch(
   '/avatar',
-  upload.single('avatar'),
   tryCatchWrapper(auth),
+  upload.single('avatar'),
+  tryCatchWrapper(resizeAvatar),
   tryCatchWrapper(uploadAvatar)
 );
+
 module.exports = { usersRouter };

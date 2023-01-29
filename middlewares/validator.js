@@ -4,6 +4,7 @@ const jwt = require('jsonwebtoken');
 const { User } = require('../models/user');
 const multer = require('multer');
 const path = require('path');
+const Jimp = require('jimp');
 
 function validateBody(schema) {
   return (req, res, next) => {
@@ -57,8 +58,23 @@ const upload = multer({
   },
 });
 
+async function resizeAvatar(req, res, next) {
+  const { path } = req.file;
+  try {
+    const avatar = await Jimp.read(path);
+    const resizedAvatar = avatar.resize(250, 250);
+
+    await resizedAvatar.writeAsync(path);
+  } catch (error) {
+    return res.status(400).json({ message: error.message });
+  }
+
+  next();
+}
+
 module.exports = {
   validateBody,
   auth,
   upload,
+  resizeAvatar,
 };

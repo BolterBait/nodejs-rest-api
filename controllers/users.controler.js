@@ -3,7 +3,6 @@ const { validateBody } = require('../middlewares/validator');
 const fs = require('fs/promises');
 const path = require('path');
 const { User } = require('../models/user');
-const Jimp = require('jimp');
 
 async function createContact(req, res, next) {
   const { _id } = req.user;
@@ -40,7 +39,6 @@ async function current(req, res, next) {
 async function uploadAvatar(req, res, next) {
   const { _id } = req.user;
   const { user } = req;
-  console.log('file', req.file);
   const { filename } = req.file;
 
   const tmpPath = path.resolve(__dirname, '../tmp', filename);
