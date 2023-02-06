@@ -1,8 +1,10 @@
-const { User } = require('../models/user');
-const { Conflict, Unauthorized } = require('http-errors');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const gravatar = require('gravatar');
+const { User } = require('../models/user');
+const { Conflict, Unauthorized } = require('http-errors');
+const { sendMail } = require('../helpers/index');
+const { v4 } = require('uuid');
 
 async function register(req, res, next) {
   const { email, password } = req.body;
@@ -16,6 +18,14 @@ async function register(req, res, next) {
       password: hashedPassword,
       avatarURL: url,
     });
+    const uuid = v4();
+
+    await sendMail({
+      to: email,
+      subject: 'Please confirm your email',
+      html: `<a href = "localhost:3001/users/verify/${uuid}">Confirm your email. If you didn't promt to our service, please ignore it.</a>`,
+    });
+
     res.status(201).json({ data: { user: { email, id: savedUser._id } } });
   } catch (error) {
     if (error.message.includes('E11000 duplicate key error')) {
