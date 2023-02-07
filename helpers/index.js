@@ -1,5 +1,5 @@
-const sendGrid = require('@sendgrid/mail');
-const { SENDGRID_API_KEY } = process.env;
+const nodemailer = require('nodemailer');
+const { EMAIL_USER, EMAIL_PASS } = process.env;
 
 function tryCatchWrapper(endpointFn) {
   return async (req, res, next) => {
@@ -19,15 +19,21 @@ class HttpError extends Error {
 }
 
 async function sendMail({ to, subject, html }) {
-  sendGrid.setApiKey(SENDGRID_API_KEY);
   const email = {
-    from: 'alex4@ua.fm',
+    from: 'osvyatobog@gmail.com',
     to,
     subject,
     html,
   };
-
-  const response = await sendGrid.sendMail(email);
+  const transport = nodemailer.createTransport({
+    host: 'sandbox.smtp.mailtrap.io',
+    port: 2525,
+    auth: {
+      user: EMAIL_USER,
+      pass: EMAIL_PASS,
+    },
+  });
+  const response = await transport.sendMail(email);
   console.log(response);
 }
 
