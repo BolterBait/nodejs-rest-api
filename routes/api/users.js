@@ -12,6 +12,7 @@ const {
   current,
   uploadAvatar,
   verifyEmail,
+  resendVerificationEmail,
 } = require('../../controllers/users.controler');
 const { addContactSchema } = require('../../schemas');
 const usersRouter = express.Router();
@@ -36,5 +37,6 @@ usersRouter.patch(
   tryCatchWrapper(uploadAvatar)
 );
 usersRouter.get('/verify/:token', tryCatchWrapper(verifyEmail));
+usersRouter.post('/verify', tryCatchWrapper(resendVerificationEmail));
 
 module.exports = { usersRouter };

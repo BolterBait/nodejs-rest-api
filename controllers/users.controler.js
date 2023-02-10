@@ -4,6 +4,7 @@ const { validateBody } = require('../middlewares/validator');
 const fs = require('fs/promises');
 const path = require('path');
 const { User } = require('../models/user');
+const { sendMail } = require('../helpers/index');
 
 async function createContact(req, res, next) {
   const { _id } = req.user;
@@ -83,10 +84,36 @@ async function verifyEmail(req, res, next) {
   });
 }
 
+async function resendVerificationEmail(req, res, next) {
+  const { email } = req.body;
+  const user = await User.findOne({ email });
+
+  if (!user) {
+    res.status(400).json({ message: 'missing required field email' });
+  }
+
+  const verified = user.verify;
+  console.log(verified);
+  if (!verified) {
+    const verificationToken = user.verificationToken;
+    await sendMail({
+      to: email,
+      subject: 'Please confirm your email',
+      html: `<a href = "localhost:3001/api/users/verify/${verificationToken}">Confirm your email. If you didn't promt to our service, please ignore it.</a>`,
+    });
+
+    return res.json({
+      message: 'Success',
+    });
+  }
+  res.status(400).json({ message: 'Verification has already been passed' });
+}
+
 module.exports = {
   createContact,
   getContacts,
   current,
   uploadAvatar,
   verifyEmail,
+  resendVerificationEmail,
 };
