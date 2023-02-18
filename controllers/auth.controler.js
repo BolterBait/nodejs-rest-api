@@ -24,7 +24,7 @@ async function register(req, res, next) {
     await sendMail({
       to: email,
       subject: 'Please confirm your email',
-      html: `<a href = "localhost:3001/api/users/verify/${verificationToken}">Confirm your email. If you didn't promt to our service, please ignore it.</a>`,
+      html: `<a href="localhost:3001/api/users/verify/${verificationToken}">Confirm your email. If you didn't promt to our service, please ignore it.</a>`,
     });
 
     res.status(201).json({ data: { user: { email, id: savedUser._id } } });
